@@ -6,7 +6,7 @@ import math
 class App:
     def __init__(self):
         self.window = tk.Tk()
-        self.window.geometry("400x600")
+        self.window.geometry("350x550")
         self.window.resizable(False, False)
         self.window.title("Calculator")
 
@@ -213,6 +213,10 @@ class App:
 
         # draw hex conversion button
         self.draw_button("Hex", 5, 0, lambda: self.to_hex(
+        ), keys.LABEL_COLOR, keys.BLACK_COLOR, keys.DEFAULT_FONT_STYLE)
+
+        # draw logical and button
+        self.draw_button("AND", 6, 0, lambda: self.logical_and(
         ), keys.LABEL_COLOR, keys.BLACK_COLOR, keys.DEFAULT_FONT_STYLE)
 
         # draw clear button
@@ -574,13 +578,23 @@ class App:
         self.update_total_label()
         self.update_label()
 
-    # bind keys
+    # logical and
+    def logical_and(self):
+        if self.current_expression == "":
+            return
+        self.total_expression = self.current_expression + " & "
+        self.current_expression = ""
+        self.update_total_label()
+        self.update_label()
 
+    # bind keys
     def bind_keys(self):
         self.window.bind("<Return>", lambda event: self.evaluate())
         self.window.bind("<BackSpace>", lambda event: self.clear_one())
         self.window.bind("<Delete>", lambda event: self.clear())
         self.window.bind("=", lambda event: self.evaluate())
+        self.window.bind("(", lambda event: self.append_parantheses("("))
+        self.window.bind(")", lambda event: self.append_parantheses(")"))
         for key in self.scientific_digits:
             self.window.bind(str(key), lambda event,
                              key=key: self.add_digit(key))
